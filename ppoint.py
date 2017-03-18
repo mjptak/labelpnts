@@ -49,7 +49,13 @@ class Pgon:
         self.edgelist = edgelist
     def locreport(self):
         return len(self.edgelist)
-        
+def readLines():
+    llist=[]
+    with open("2013_leaders.csv") as g:
+        for line in g:
+		    llist.append(line)
+	return llist
+            		
         
 
 #begin main program
@@ -71,6 +77,10 @@ print len(pntsdict)
 
 for k,v in pntsdict.iteritems():
     print k,v.locreport()[0]
+
+llist = readLines()
+for each in llist:
+    print each
 
 #probably a much cleaner way to encapsulate points
 
