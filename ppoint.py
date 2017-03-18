@@ -1,7 +1,8 @@
 #!
 """
 connecting up labels through fuzzy lines to a label point
-also a use of 
+also a use of git
+Next step.   naming points and then deciding if labels should be associated with a leader or not (some aren't)
 
 """
 
