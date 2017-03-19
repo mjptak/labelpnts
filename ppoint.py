@@ -54,6 +54,9 @@ def readLines():
     llist=[]
     lcnt = 0
     plist = []
+    pntdict={}
+    pntcnt = 0
+    lpntdict={}
     with open("2013_leaders.csv") as g:
         linecnt = 0
         pntcnt = 0
@@ -61,18 +64,23 @@ def readLines():
             a = line.split(',')
             try:
                 spnt = (float(a[2]),float(a[3]))
-                epnt = (float(a[4]),float(a[5]))
+                if spnt not in plist:
+                    plist.append(spnt)
+                    lpntdict[pntcnt] = Ppoint(pntcnt,spnt[0],spnt[1])
+                    pntcnt+=1
             except:
-                spnt = (0,0)
-                #print line
-                epnt = (0,0)
-            if spnt not in plist:
-                plist.append(spnt)
-            if epnt not in plist:
-                plist.append(epnt)
+                continue
+            try:
+                epnt = (float(a[4]),float(a[5]))
+                if epnt not in plist:
+                    plist.append(epnt)
+                    lpntpict[pntcnt] = Ppoint(pntcnt,epnt[0],epnt[1])
+                    pntcnt+=1
+            except:
+                continue
             lcnt+=1
     print "total number of leader segments = %s" %lcnt
-    return plist
+    return lpntdict
                     
         
 
@@ -91,13 +99,17 @@ with open("2013_labels.csv") as f:
 
 tolerance = 0.1
 print len(pntsdict)
-tpntlist = readLines()  #temp check to get unique leader point count
-print len (tpntlist)
+lpntdict2 = readLines()  
+print len (lpntdict2)
+
 
 
 for k,v in pntsdict.iteritems():
-    #print k,v.locreport()[0]
+    print k,v.locreport()[0]
     continue
+
+for k,v in lpntdict2.iteritems():
+    print k,v.locreport()
 
 
 
