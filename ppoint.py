@@ -74,13 +74,13 @@ def readLines():
                 epnt = (float(a[4]),float(a[5]))
                 if epnt not in plist:
                     plist.append(epnt)
-                    lpntpict[pntcnt] = Ppoint(pntcnt,epnt[0],epnt[1])
+                    lpntdict[pntcnt] = Ppoint(pntcnt,epnt[0],epnt[1])
                     pntcnt+=1
             except:
                 continue
             lcnt+=1
     print "total number of leader segments = %s" %lcnt
-    return lpntdict
+    return lpntdict # todo:  add in the line library where lines are defined from node# to node #  _check for direction
                     
         
 
@@ -111,6 +111,7 @@ for k,v in pntsdict.iteritems():
 for k,v in lpntdict2.iteritems():
     print k,v.locreport()
 
+print "there are %s labels and %s endpoints in leaders" %(len(pntsdict),len(lpntdict2))  #count looks low
 
 
 #probably a much cleaner way to encapsulate points
