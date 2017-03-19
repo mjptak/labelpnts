@@ -112,7 +112,24 @@ for k,v in lpntdict2.iteritems():
     print k,v.locreport()
 
 print "there are %s labels and %s endpoints in leaders" %(len(pntsdict),len(lpntdict2))  #count looks low
+#not just build flatter lists
+clabs =[]
+cpnts = []
 
+for k,v in pntsdict.iteritems():
+    clabs.append(v)
+for k,v in lpntdict2.iteritems():
+    cpnts.append(v)
+ 
+for each in clabs:
+    icnt = 0
+    for indv in cpnts:
+        if each.dist(indv) < each.closest_distance:
+            each.setclosest(icnt,each.dist(indv))
+        icnt +=1
+            
+for each in clabs:
+    print each.name, each.closest_distance#this should be the distance to the closest leader endpoint
 
 #probably a much cleaner way to encapsulate points
 
@@ -120,3 +137,4 @@ if __name__ == "__main__":
     print("ppoint.py is being run directly")
 else:
     print("ppoint.py is being imported into another module")
+
