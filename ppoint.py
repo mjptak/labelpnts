@@ -132,6 +132,17 @@ for each in clabs:
     print each.name, each.closest_distance#this should be the distance to the closest leader endpoint
 
 #probably a much cleaner way to encapsulate points
+#looping through a set of lines and looking for things that connect until you reach the end.
+#for not just reopen the line file and cycle through defining the endpoints by the name
+
+with open("2013_leaders.csv") as g:
+    for line in g:
+        a = line.split(',')
+        tpnt = (float(a[2]),float(a[3]))
+        for k,v in lpntdict2.iteritems():
+            dist = ((v.locreport()[1] - tpnt[0])**2 + (v.locreport()[2]-tpnt[1])**2)**0.5
+            if dist < 0.01:
+                print k
 
 if __name__ == "__main__":
     print("ppoint.py is being run directly")
