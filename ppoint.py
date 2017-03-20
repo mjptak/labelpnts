@@ -38,8 +38,8 @@ class Edge:
         self.name = name
         self.start = node1
         self.end = node2
-        self.length = dist(self.start,self.end)
-        self.dir
+        #self.length = dist(self.start,self.end)
+        #self.dir
     def locreport(self):
         return self.start.selfreport(), self.end.selfreport()
         
@@ -134,7 +134,7 @@ for each in clabs:
 #probably a much cleaner way to encapsulate points
 #looping through a set of lines and looking for things that connect until you reach the end.
 #for not just reopen the line file and cycle through defining the endpoints by the name
-
+edgelist=[]
 with open("2013_leaders.csv") as g:
     for line in g:
         a = line.split(',')
@@ -142,8 +142,25 @@ with open("2013_leaders.csv") as g:
         for k,v in lpntdict2.iteritems():
             dist = ((v.locreport()[1] - tpnt[0])**2 + (v.locreport()[2]-tpnt[1])**2)**0.5
             if dist < 0.01:
-                print k
-
+                startnode = lpntdict2[k]
+                
+        tpnt = (float(a[4]),float(a[5]))
+        for k,v in lpntdict2.iteritems():
+            dist = ((v.locreport()[1] - tpnt[0])**2 + (v.locreport()[2]-tpnt[1])**2)**0.5
+            if dist < 0.01:
+                endnode = lpntdict2[k]
+        print a[0],startnode.name,endnode.name
+        a = Edge(a[0],startnode,endnode)
+        edgelist.append(a)
+connectlist =[]
+for each in edgelist:
+    for inv in edgelist:
+        if each.start == inv.start or each.start == inv.end:
+            if each.start == inv.start and each.end == inv.end:
+                continue
+            else:
+                connectlist.append([each,inv])
+    
 if __name__ == "__main__":
     print("ppoint.py is being run directly")
 else:
