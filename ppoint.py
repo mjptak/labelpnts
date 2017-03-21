@@ -217,7 +217,7 @@ for k,v in pntsdict.iteritems():
     else:
         print "label %s does not have a leader nearby" %k
 for k,v in firstnode.iteritems():
-    print pntsdict[k].locreport, lpntdict2[v[0]].locreport        
+    print pntsdict[k].locreport()[1:3], lpntdict2[v[0]].locreport()[1:3]      
         
 #print len(nodekeydict), len(edgelist), len (pntsdict), endcnt
         
