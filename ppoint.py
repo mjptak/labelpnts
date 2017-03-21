@@ -7,7 +7,7 @@ Next step.   naming points and then deciding if labels should be associated with
 key variable list:
 pntsdict is the label points dictionary
 lpntdict2 is the leader endnode points dictionary where the names are auto generated (probably better to name them by location) 
-
+todo need to check for stripping of the whitespace
 """
 
 
@@ -106,7 +106,7 @@ with open("2013_labels.csv") as f:
     for line in f:
         #print line
         tmp = line.split(',')
-        pnt = Ppoint(tmp[4],tmp[2],tmp[3])
+        pnt = Ppoint(tmp[4].strip(),tmp[2],tmp[3])
         #check for duplicate labels before storing by cycling through keys
         pntsdict[pnt.locreport()[0]] = pnt
 
@@ -193,16 +193,34 @@ for each in edgelist:
         nodekeydict[each.end.name] = 1
     else:
         nodekeydict[each.end.name] = nodekeydict[each.end.name] + 1
-
+hanglist=[]
 endcnt= 0
 for k,v in nodekeydict.iteritems():
     if v < 2:
         endcnt+=1
+        hanglist.append(k)
         
+#might be useful to delete or flag nodes that are connected to more than 3 links
+#hanglist is a list of the leader point nodes that are connected to a single link
+hanglist.sort()
+firstnode ={}
+for k,v in pntsdict.iteritems():
+    mindist = 1000000
+    minnode = 9999
+    for each in hanglist:
+        checkdist = v.dist(lpntdict2[each])
+        if checkdist < mindist:
+            mindist = checkdist
+            minnode = each
+    if mindist < 10000:
+        firstnode[k.strip()] = [minnode, mindist]
+    else:
+        print "label %s does not have a leader nearby" %k
+for k,v in firstnode.iteritems():
+    print pntsdict[k].locreport, lpntdict2[v[0]].locreport        
         
-print len(nodekeydict), len(edgelist), len (pntsdict), endcnt
+#print len(nodekeydict), len(edgelist), len (pntsdict), endcnt
         
-
 if __name__ == "__main__":
     print("ppoint.py is being run directly")
 else:
