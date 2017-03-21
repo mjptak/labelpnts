@@ -4,6 +4,10 @@ connecting up labels through fuzzy lines to a label point
 also a use of git
 Next step.   naming points and then deciding if labels should be associated with a leader or not (some aren't)
 
+key variable list:
+pntsdict is the label points dictionary
+lpntdict2 is the leader endnode points dictionary where the names are auto generated (probably better to name them by location) 
+
 """
 
 
@@ -50,6 +54,8 @@ class Pgon:
         self.edgelist = edgelist
     def locreport(self):
         return len(self.edgelist)
+
+#readLines brings in the leader lines       
 def readLines():
     llist=[]
     lcnt = 0
@@ -74,7 +80,10 @@ def readLines():
                 epnt = (float(a[4]),float(a[5]))
                 if epnt not in plist:
                     plist.append(epnt)
-                    lpntdict[pntcnt] = Ppoint(pntcnt,epnt[0],epnt[1])
+                    if pntcnt not in lpntdict:
+                        lpntdict[pntcnt] = Ppoint(pntcnt,epnt[0],epnt[1])
+                    else:
+                        print "%s has a duplicate label" %pntcnt
                     pntcnt+=1
             except:
                 continue
@@ -89,6 +98,10 @@ import math
 import os
         
 pntsdict = {}
+
+#read and process labels file for insertion points and values of labels
+#store them in pntsdict
+#probably better to move to a function!
 with open("2013_labels.csv") as f:
     for line in f:
         #print line
@@ -97,30 +110,30 @@ with open("2013_labels.csv") as f:
         #check for duplicate labels before storing by cycling through keys
         pntsdict[pnt.locreport()[0]] = pnt
 
-tolerance = 0.1
-print len(pntsdict)
+
 lpntdict2 = readLines()  
-print len (lpntdict2)
 
 
 
-for k,v in pntsdict.iteritems():
-    print k,v.locreport()[0]
-    continue
+
+
 
 for k,v in lpntdict2.iteritems():
-    print k,v.locreport()
+    #print k,v.locreport()
+    continue
 
 print "there are %s labels and %s endpoints in leaders" %(len(pntsdict),len(lpntdict2))  #count looks low
 #not just build flatter lists
 clabs =[]
 cpnts = []
 
+#clabs and cpnts are lists of label points and leader nodes
 for k,v in pntsdict.iteritems():
     clabs.append(v)
 for k,v in lpntdict2.iteritems():
     cpnts.append(v)
- 
+""" 
+#move this till after figuring out the dangling nodes
 for each in clabs:
     icnt = 0
     for indv in cpnts:
@@ -130,10 +143,13 @@ for each in clabs:
             
 for each in clabs:
     print each.name, each.closest_distance#this should be the distance to the closest leader endpoint
-
+"""
 #probably a much cleaner way to encapsulate points
 #looping through a set of lines and looking for things that connect until you reach the end.
 #for not just reopen the line file and cycle through defining the endpoints by the name
+
+#poor implementation but reopen the leader files in order to tie lines to nodes
+#edgelist is a list of all the leader lines defined by beginning and ending nodes.
 edgelist=[]
 with open("2013_leaders.csv") as g:
     for line in g:
@@ -143,7 +159,7 @@ with open("2013_leaders.csv") as g:
             dist = ((v.locreport()[1] - tpnt[0])**2 + (v.locreport()[2]-tpnt[1])**2)**0.5
             if dist < 0.01:
                 startnode = lpntdict2[k]
-                
+           
         tpnt = (float(a[4]),float(a[5]))
         for k,v in lpntdict2.iteritems():
             dist = ((v.locreport()[1] - tpnt[0])**2 + (v.locreport()[2]-tpnt[1])**2)**0.5
@@ -152,6 +168,9 @@ with open("2013_leaders.csv") as g:
         print a[0],startnode.name,endnode.name
         a = Edge(a[0],startnode,endnode)
         edgelist.append(a)
+print "there are %s edges of varying lengths in the leader file" %len(edgelist)
+"""
+#no need to do the connect list until you have the dangling nodes
 connectlist =[]
 for each in edgelist:
     for inv in edgelist:
@@ -160,7 +179,30 @@ for each in edgelist:
                 continue
             else:
                 connectlist.append([each,inv])
-    
+"""
+                
+                #build just the endpoints
+#go through and count the occurences of each node name
+nodekeydict ={}
+for each in edgelist:
+    if each.start.name not in nodekeydict:
+        nodekeydict[each.start.name] = 1
+    else:
+        nodekeydict[each.start.name] = nodekeydict[each.start.name] + 1
+    if each.end.name not in nodekeydict:
+        nodekeydict[each.end.name] = 1
+    else:
+        nodekeydict[each.end.name] = nodekeydict[each.end.name] + 1
+
+endcnt= 0
+for k,v in nodekeydict.iteritems():
+    if v < 2:
+        endcnt+=1
+        
+        
+print len(nodekeydict), len(edgelist), len (pntsdict), endcnt
+        
+
 if __name__ == "__main__":
     print("ppoint.py is being run directly")
 else:
